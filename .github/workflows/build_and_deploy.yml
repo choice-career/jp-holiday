@@ -64,6 +64,20 @@ jobs:
         run: |
           python src/main.py
 
+      # swagger を読み込む
+      - name: Checkout swagger-ui
+        uses: actions/checkout@v3
+        with:
+          repository: swagger-api/swagger-ui
+          ref: 'v4.15.5'
+          path: .swagger-ui
+      - name: Copy Swagger Static files
+        run: |
+          mkdir -p docs/swagger-ui
+          cp .swagger-ui/dist/* docs/swagger-ui
+      - name: Copy Swagger module files
+        run: cp -f swagger/* docs/swagger-ui
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:

@@ -62,10 +62,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Build docs directory
+      - name: Build API
         if: steps.api_cache_id.outputs.cache-hit != 'true'
+        id: build_api
         run: |
           python src/main.py
+          echo "API_UPDATED=true" >> $GITHUB_OUTPUT
       - name: Copy API files to docs
         run: |
           cp -rf .docs/api/* docs
@@ -86,17 +88,20 @@ jobs:
           ref: 'v4.15.5'
           path: .swagger-ui
       - name: Copy Swagger files
+        id: build_swagger
         if: steps.swagger_cache_id.outputs.cache-hit != 'true'
         run: |
           mkdir -p .docs/swagger
           cp .swagger-ui/dist/* .docs/swagger
           cp -f swagger/* .docs/swagger
+          echo "SWAGGER_UPDATED=true" >> $GITHUB_OUTPUT
       - name: Copy Swagger files to docs
         run: |
           mkdir -p docs/swagger-ui
           cp -f .docs/swagger/* docs/swagger-ui
 
       - name: Upload artifact
+        if : steps.build_api.API_UPDATED == 'true' || steps.build_swagger.outputs.SWAGGER_UPDATED == 'true'
         uses: actions/upload-pages-artifact@v2
         with:
           # Upload entire repository
@@ -110,5 +115,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
+        if : needs.build.outputs.API_UPDATED == 'true' || needs.build.outputs.SWAGGER_UPDATED == 'true'
         id: deployment
         uses: actions/deploy-pages@v2

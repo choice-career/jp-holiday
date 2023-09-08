@@ -29,9 +29,25 @@ jobs:
         python-version: ["3.11"]
     env:
       GEN_HOLIDAY_API: true
+      HASH_SUFFIX: v1
     steps:
       - uses: actions/checkout@v3
+      - name: Check CSV hash
+        run: |
+          export CSV_URL="https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv"
+          export CSV_HASH=$(curl -s $CSV_URL | shasum | cut -d' ' -f 1)
+          export CACHE_KEY="${CSV_HASH}-${HASH_SUFFIX}"
+          echo $CACHE_KEY
+          echo "CACHE_KEY=$CACHE_KEY" >> $GITHUB_ENV
+      - name: Cache docs
+        id: docs_cache_id
+        uses: actions/cache@v3
+        with:
+          path: docs
+          key: ${{ env.CACHE_KEY }}
+
       - name: Set up Python ${{ matrix.python-version }}
+        if: steps.docs_cache_id.outputs.cache-hit != 'true'
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}

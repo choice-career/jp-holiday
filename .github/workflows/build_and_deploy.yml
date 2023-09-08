@@ -63,9 +63,9 @@ jobs:
         if: steps.api_cache_id.outputs.cache-hit != 'true'
         run: |
           python src/main.py
-      - name: Copy API files to docs
+      - name: Copy API files to cache
         run: |
-          cp -rf .docs/api/* docs
+          cp -rf docs/* .docs/api
 
       # Swagger の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む

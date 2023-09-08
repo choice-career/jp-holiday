@@ -5,6 +5,9 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
+  schedule:
+    # 毎日 21:21 (JST) に実行する
+    - cron: '21 12 * * *'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

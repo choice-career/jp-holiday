@@ -65,6 +65,7 @@ jobs:
           python src/main.py
       - name: Copy API files to cache
         run: |
+          mkdir -p .docs/api
           cp -rf docs/* .docs/api
 
       # Swagger の生成

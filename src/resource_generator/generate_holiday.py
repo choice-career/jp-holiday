@@ -10,7 +10,7 @@ from tqdm import tqdm, trange
 from holiday import HolidayMap
 from resource_generator.common import File
 
-BASE_PATH: Final[str] = "docs/api/v1/holiday"
+BASE_PATH: Final[str] = "holiday"
 
 
 def holiday_json_str(name: Optional[str]) -> str:

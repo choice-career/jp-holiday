@@ -6,7 +6,7 @@ from typing import Final
 from holiday import HolidayMap
 from resource_generator.common import File
 
-BASE_PATH: Final[str] = "docs/api/v1/list"
+BASE_PATH: Final[str] = "list"
 
 
 class GenerateList:

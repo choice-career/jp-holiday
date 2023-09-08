@@ -86,6 +86,7 @@ jobs:
       - name: Copy Swagger files
         if: steps.swagger_cache_id.outputs.cache-hit != 'true'
         run: |
+          mkdir -p .docs/swagger
           cp .swagger-ui/dist/* .docs/swagger
           cp -f swagger/* .docs/swagger
       - name: Copy Swagger files to docs

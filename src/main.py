@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from holiday import get_holiday_csv_str, parse_holiday_to_dict
+from resource_generator.generate_holiday import GenerateHoliday
 from resource_generator.generate_list import GenerateList
 
 REPOSITORY_ROOT = Path(__file__).parent.parent
@@ -11,6 +12,9 @@ def generate_api() -> None:
 
     gl = GenerateList(REPOSITORY_ROOT)
     gl.generate(holiday_map)
+
+    gh = GenerateHoliday(REPOSITORY_ROOT)
+    gh.generate(holiday_map)
 
 
 generate_api()

@@ -31,6 +31,7 @@ jobs:
       GEN_HOLIDAY_API: true
       HASH_SUFFIX: v1
     steps:
+      # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む
       - uses: actions/checkout@v3
       - name: Check CSV hash
@@ -41,42 +42,55 @@ jobs:
           echo $CACHE_KEY
           echo "CACHE_KEY=$CACHE_KEY" >> $GITHUB_ENV
           echo "THIS_YEAR=$(date +%Y)" >> $GITHUB_ENV
-      - name: Cache docs
-        id: docs_cache_id
+      - name: Cache API
+        id: api_cache_id
         uses: actions/cache@v3
         with:
-          path: docs
+          path: .docs/api
           key: ${{ env.CACHE_KEY }}-${{ env.THIS_YEAR }}
-
       # CSV が更新されているときだけ python ビルドする
       - name: Set up Python ${{ matrix.python-version }}
-        if: steps.docs_cache_id.outputs.cache-hit != 'true'
+        if: steps.api_cache_id.outputs.cache-hit != 'true'
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        if: steps.docs_cache_id.outputs.cache-hit != 'true'
+        if: steps.api_cache_id.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Build docs directory
-        if: steps.docs_cache_id.outputs.cache-hit != 'true'
+        if: steps.api_cache_id.outputs.cache-hit != 'true'
         run: |
           python src/main.py
+      - name: Copy API files to docs
+        run: |
+          cp -rf .docs/api/* docs
 
-      # swagger を読み込む
+      # Swagger の生成
+      # CSV が更新されているか確認しつつ、キャッシュを読み込む
+      - name: Cache Swagger
+        id: swagger_cache_id
+        uses: actions/cache@v3
+        with:
+          path: .docs/swagger
+          key: ${{ hashFiles('swagger/openapi.yml') }}
       - name: Checkout swagger-ui
+        if: steps.swagger_cache_id.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
         with:
           repository: swagger-api/swagger-ui
           ref: 'v4.15.5'
           path: .swagger-ui
-      - name: Copy Swagger Static files
+      - name: Copy Swagger files
+        if: steps.swagger_cache_id.outputs.cache-hit != 'true'
+        run: |
+          cp .swagger-ui/dist/* .docs/swagger
+          cp -f swagger/* .docs/swagger
+      - name: Copy Swagger files to docs
         run: |
           mkdir -p docs/swagger-ui
-          cp .swagger-ui/dist/* docs/swagger-ui
-      - name: Copy Swagger module files
-        run: cp -f swagger/* docs/swagger-ui
+          cp -f .docs/swagger/* docs/swagger-ui
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2

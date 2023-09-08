@@ -109,12 +109,12 @@ jobs:
   # Single deploy job since we're just deploying
   deploy:
     needs: build
+    if : needs.build.outputs.API_UPDATED == 'true' || needs.build.outputs.SWAGGER_UPDATED == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
-        if : needs.build.outputs.API_UPDATED == 'true' || needs.build.outputs.SWAGGER_UPDATED == 'true'
         id: deployment
         uses: actions/deploy-pages@v2

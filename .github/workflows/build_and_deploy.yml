@@ -40,12 +40,13 @@ jobs:
           export CACHE_KEY="${CSV_HASH}-${HASH_SUFFIX}"
           echo $CACHE_KEY
           echo "CACHE_KEY=$CACHE_KEY" >> $GITHUB_ENV
+          echo "THIS_YEAR=$(date +%Y)" >> $GITHUB_ENV
       - name: Cache docs
         id: docs_cache_id
         uses: actions/cache@v3
         with:
           path: docs
-          key: ${{ env.CACHE_KEY }}
+          key: ${{ env.CACHE_KEY }}-${{ env.THIS_YEAR }}
 
       # CSV が更新されているときだけ python ビルドする
       - name: Set up Python ${{ matrix.python-version }}

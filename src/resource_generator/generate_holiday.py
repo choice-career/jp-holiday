@@ -27,13 +27,16 @@ class GenerateHoliday:
         self.base_path = self.root_path.joinpath(BASE_PATH)
 
     def generate(self, holiday_map: HolidayMap) -> None:
-        for file in tqdm(self.gen(holiday_map), desc="Writing..."):
+        files = self.gen(holiday_map)
+        print("Writing...")
+        for file in files:
             file.write()
 
     def gen(self, holiday_map: HolidayMap) -> list[File]:
         years = list(set(map(int, [k.split("-")[0] for k in holiday_map.keys()])))
         files: list[File] = []
-        for year in tqdm(years, desc="Generating..."):
+        print("Generating...")
+        for year in years:
             for month in range(1, 12 + 1):
                 for date in range(1, monthrange(year, month)[1] + 1):
                     name = holiday_map.get(f"{year:04d}-{month:02d}-{date:02d}")

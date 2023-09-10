@@ -67,7 +67,6 @@ jobs:
         id: build_api
         run: |
           python src/main.py
-          echo "API_UPDATED=true" >> $GITHUB_ENV
           echo "API_UPDATED=true" >> $GITHUB_OUTPUT
       - name: Copy API files to docs
         run: |
@@ -95,7 +94,6 @@ jobs:
           mkdir -p .docs/swagger
           cp .swagger-ui/dist/* .docs/swagger
           cp -f swagger/* .docs/swagger
-          echo "SWAGGER_UPDATED=true" >> $GITHUB_ENV
           echo "SWAGGER_UPDATED=true" >> $GITHUB_OUTPUT
       - name: Copy Swagger files to docs
         run: |
@@ -103,7 +101,7 @@ jobs:
           cp -f .docs/swagger/* docs/swagger-ui
 
       - name: Upload artifact
-        if : steps.build_api.API_UPDATED == 'true' || steps.build_swagger.outputs.SWAGGER_UPDATED == 'true'
+        if : steps.build_api.conclusion != 'skipped' || steps.build_swagger.conclusion != 'skipped'
         uses: actions/upload-pages-artifact@v2
         with:
           # Upload entire repository

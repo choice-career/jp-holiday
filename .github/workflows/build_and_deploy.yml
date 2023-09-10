@@ -32,7 +32,7 @@ jobs:
         python-version: ["3.11"]
     env:
       GEN_HOLIDAY_API: true
-      HASH_SUFFIX: v1
+      HASH_SUFFIX: v2
     steps:
       # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む

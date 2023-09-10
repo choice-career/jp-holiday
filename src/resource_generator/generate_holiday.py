@@ -39,7 +39,7 @@ class GenerateHoliday:
                     files.append(
                         File(
                             self.base_path.joinpath(
-                                f"{year:04d}/{month:02d}/{date:02d}"
+                                f"{year:04d}/{month:02d}/{date:02d}.json"
                             ),
                             holiday_json_str(name),
                         )

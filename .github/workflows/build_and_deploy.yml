@@ -70,6 +70,7 @@ jobs:
         run: python src/main.py
       - name: Copy API files to docs
         run: |
+          mkdir -p docs  # これが無いと api が docs に置き換わって PATH がおかしくなる
           cp -rf .docs/api/* docs
 
       # Swagger の生成

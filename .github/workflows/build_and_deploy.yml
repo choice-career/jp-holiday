@@ -67,6 +67,7 @@ jobs:
         id: build_api
         run: |
           python src/main.py
+          echo "API_UPDATED=true" >> $GITHUB_ENV
           echo "API_UPDATED=true" >> $GITHUB_OUTPUT
       - name: Copy API files to docs
         run: |
@@ -94,6 +95,7 @@ jobs:
           mkdir -p .docs/swagger
           cp .swagger-ui/dist/* .docs/swagger
           cp -f swagger/* .docs/swagger
+          echo "SWAGGER_UPDATED=true" >> $GITHUB_ENV
           echo "SWAGGER_UPDATED=true" >> $GITHUB_OUTPUT
       - name: Copy Swagger files to docs
         run: |

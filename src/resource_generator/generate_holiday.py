@@ -31,7 +31,7 @@ class GenerateHoliday:
             file.write()
 
     def gen(self, holiday_map: HolidayMap) -> list[File]:
-        years = list(map(int, [k.split("-")[0] for k in holiday_map.keys()]))
+        years = list(set(map(int, [k.split("-")[0] for k in holiday_map.keys()])))
         files: list[File] = []
         for year in tqdm(years, desc="Generating..."):
             for month in range(1, 12 + 1):

@@ -33,6 +33,8 @@ jobs:
     env:
       GEN_HOLIDAY_API: true
       HASH_SUFFIX: v2
+    outputs:
+      should_deploy: ${{ steps.set_output_to_deploy.outputs.upload_artifact }}
     steps:
       # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む
@@ -65,9 +67,7 @@ jobs:
       - name: Build API
         if: steps.api_cache_id.outputs.cache-hit != 'true'
         id: build_api
-        run: |
-          python src/main.py
-          echo "API_UPDATED=true" >> $GITHUB_OUTPUT
+        run: python src/main.py
       - name: Copy API files to docs
         run: |
           cp -rf .docs/api/* docs
@@ -94,22 +94,26 @@ jobs:
           mkdir -p .docs/swagger
           cp .swagger-ui/dist/* .docs/swagger
           cp -f swagger/* .docs/swagger
-          echo "SWAGGER_UPDATED=true" >> $GITHUB_OUTPUT
       - name: Copy Swagger files to docs
         run: |
           mkdir -p docs/swagger-ui
           cp -f .docs/swagger/* docs/swagger-ui
 
       - name: Upload artifact
+        id: upload_artifact
         if : steps.build_api.conclusion != 'skipped' || steps.build_swagger.conclusion != 'skipped'
         uses: actions/upload-pages-artifact@v2
         with:
           # Upload entire repository
           path: 'docs'
+      - name: Set Output to deploy
+        id: set_output_to_deploy
+        if: steps.upload_artifact.conclusion != 'skipped'
+        run: echo "upload_artifact=true" >> "$GITHUB_OUTPUT"
   # Single deploy job since we're just deploying
   deploy:
     needs: build
-    if : needs.build.outputs.API_UPDATED == 'true' || needs.build.outputs.SWAGGER_UPDATED == 'true'
+    if : needs.build.outputs.should_deploy == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

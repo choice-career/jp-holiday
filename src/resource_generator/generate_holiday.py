@@ -1,11 +1,7 @@
 import json
 from calendar import monthrange
-from collections import defaultdict
-from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Final, Optional
-
-from tqdm import tqdm, trange
 
 from holiday import HolidayMap
 from resource_generator.common import File

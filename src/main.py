@@ -1,5 +1,5 @@
-from pathlib import Path
 from os import environ
+from pathlib import Path
 
 from holiday import get_holiday_csv_str, parse_holiday_to_dict
 from resource_generator.generate_holiday import GenerateHoliday
@@ -8,6 +8,7 @@ from resource_generator.generate_list import GenerateList
 REPOSITORY_ROOT = Path(__file__).parent.parent
 GENERATE_DST = REPOSITORY_ROOT.joinpath(".docs/api")
 API_PREFIX = GENERATE_DST.joinpath("api/v1")
+
 
 def gen_holiday_api() -> bool:
     return environ.get("GEN_HOLIDAY_API") is not None

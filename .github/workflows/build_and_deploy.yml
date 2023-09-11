@@ -39,18 +39,24 @@ jobs:
       - uses: actions/checkout@v3
 
       # ドキュメントの追加
-      - name: Cache Documents
+      - name: Cache documents
         id: documents_cache_id
         uses: actions/cache@v3
         with:
-          path: jekyll-root
+          path: .docs/jekyll-root
           key: jekyll-root--${{ hashFiles('jekyll-root/**') }}
-      - name: Build Html by Jekyll
+      - name: Build html by Jekyll
         if: steps.documents_cache_id.outputs.cache-hit != 'true'
         uses: actions/jekyll-build-pages@v1
         with:
           source: jekyll-root
-          destination: docs
+          destination: .docs/jekyll-root
+      - name: Copy documents to docs
+        id: build_documents
+        if: steps.documents_cache_id.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p docs/documents
+          cp -rf .docs/jekyll-root/* docs/documents
 
       # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む

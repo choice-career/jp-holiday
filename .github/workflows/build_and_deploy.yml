@@ -57,6 +57,11 @@ jobs:
         run: |
           mkdir -p docs/documents
           cp -rf .docs/jekyll-root/* docs/documents
+          # これがないと permission denied になる
+          sudo chown -R runner:docker docs
+      - name: Debug ls
+        run: |
+          ls docs
 
       # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む

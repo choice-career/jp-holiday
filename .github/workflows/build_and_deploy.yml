@@ -36,6 +36,20 @@ jobs:
     outputs:
       should_deploy: ${{ steps.set_output_to_deploy.outputs.upload_artifact }}
     steps:
+      # ドキュメントの追加
+      - name: Cache Documents
+        id: documents_cache_id
+        uses: actions/cache@v3
+        with:
+          path: jekyll-root
+          key: jekyll-root--${{ hashFiles('jekyll-root/**') }}
+      - name: Build Html by Jekyll
+        if: steps.documents_cache_id.outputs.cache-hit != 'true'
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: jekyll-root
+          destination: docs
+
       # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む
       - uses: actions/checkout@v3
@@ -99,20 +113,6 @@ jobs:
         run: |
           mkdir -p docs/swagger-ui
           cp -f .docs/swagger/* docs/swagger-ui
-
-      # ドキュメントの追加
-      - name: Cache Documents
-        id: documents_cache_id
-        uses: actions/cache@v3
-        with:
-          path: jekyll-root
-          key: jekyll-root--${{ hashFiles('jekyll-root/**') }}
-      - name: Build Html by Jekyll
-        if: steps.documents_cache_id.outputs.cache-hit != 'true'
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: jekyll-root
-          destination: docs
 
       - name: Upload artifact
         id: upload_artifact

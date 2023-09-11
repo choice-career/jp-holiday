@@ -113,9 +113,6 @@ jobs:
         run: |
           mkdir -p docs
           cp -r documents docs/
-      - name: Copy Jekyll config to docs root
-        run: |
-          mv docs/documents/_config.yml docs
 
       - name: Upload artifact
         id: upload_artifact

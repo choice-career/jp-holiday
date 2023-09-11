@@ -1,4 +1,11 @@
-theme: minima
+remote_theme: jekyll/minima
+
+plugins:
+  - jekyll-remote-theme
+
+minima:
+  skin: auto
+
 exclude:
   - api
   - swagger-ui

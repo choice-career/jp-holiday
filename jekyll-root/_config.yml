@@ -5,7 +5,3 @@ plugins:
 
 minima:
   skin: auto
-
-exclude:
-  - api
-  - swagger-ui

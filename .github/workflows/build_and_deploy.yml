@@ -105,14 +105,14 @@ jobs:
         id: documents_cache_id
         uses: actions/cache@v3
         with:
-          path: documents
-          key: documents--${{ hashFiles('documents/**') }}
+          path: jekyll-root
+          key: jekyll-root--${{ hashFiles('jekyll-root/**') }}
       - name: Build Html by Jekyll
         if: steps.documents_cache_id.outputs.cache-hit != 'true'
         uses: actions/jekyll-build-pages@v1
         with:
-          source: documents
-          destination: docs/documents
+          source: jekyll-root
+          destination: docs
 
       - name: Upload artifact
         id: upload_artifact

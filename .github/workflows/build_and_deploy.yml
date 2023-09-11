@@ -36,6 +36,8 @@ jobs:
     outputs:
       should_deploy: ${{ steps.set_output_to_deploy.outputs.upload_artifact }}
     steps:
+      - uses: actions/checkout@v3
+
       # ドキュメントの追加
       - name: Cache Documents
         id: documents_cache_id
@@ -52,7 +54,6 @@ jobs:
 
       # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む
-      - uses: actions/checkout@v3
       - name: Check CSV hash
         run: |
           export CSV_URL="https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv"

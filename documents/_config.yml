@@ -1,1 +1,4 @@
 theme: minima
+exclude:
+  - api
+  - swagger-ui

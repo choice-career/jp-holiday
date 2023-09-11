@@ -112,7 +112,7 @@ jobs:
         uses: actions/jekyll-build-pages@v1
         with:
           source: documents
-          destination: docs
+          destination: docs/documents
 
       - name: Upload artifact
         id: upload_artifact

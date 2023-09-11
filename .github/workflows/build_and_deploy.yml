@@ -38,6 +38,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Debug whoami 1
+        run: whoami; groups;
+
       # ドキュメントの追加
       - name: Cache documents
         id: documents_cache_id
@@ -62,6 +65,9 @@ jobs:
       - name: Debug ls
         run: |
           ls docs
+
+      - name: Debug whoami 2
+        run: whoami; groups;
 
       # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む

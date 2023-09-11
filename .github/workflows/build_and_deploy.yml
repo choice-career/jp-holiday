@@ -107,19 +107,12 @@ jobs:
         with:
           path: documents
           key: documents--${{ hashFiles('documents/**') }}
-      - name: Copy Documents files
-        id: build_documents
-        if: steps.documents_cache_id.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p docs
-          cp -r documents docs/
-      - name: Copy Jekyll config to docs root
-        run: |
-          mv docs/documents/_config.yml docs
       - name: Build Html by Jekyll
+        if: steps.documents_cache_id.outputs.cache-hit != 'true'
         uses: actions/jekyll-build-pages@v1
         with:
-          source: docs
+          source: documents
+          destination: docs
 
       - name: Upload artifact
         id: upload_artifact

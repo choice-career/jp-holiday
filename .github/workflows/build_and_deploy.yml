@@ -38,9 +38,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Debug whoami 1
-        run: whoami; groups;
-
       # ドキュメントの追加
       - name: Cache documents
         id: documents_cache_id
@@ -58,16 +55,10 @@ jobs:
         id: build_documents
         if: steps.documents_cache_id.outputs.cache-hit != 'true'
         run: |
+          # まず、 .docs ディレクトリのパーミッションを直す。これがないと permission denied になる
+          sudo chown -R runner:docker .docs
           mkdir -p docs/documents
           cp -rf .docs/jekyll-root/* docs/documents
-          # これがないと permission denied になる
-          sudo chown -R runner:docker docs
-      - name: Debug ls
-        run: |
-          ls docs
-
-      - name: Debug whoami 2
-        run: whoami; groups;
 
       # API の生成
       # CSV が更新されているか確認しつつ、キャッシュを読み込む

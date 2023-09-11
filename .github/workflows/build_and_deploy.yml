@@ -100,9 +100,23 @@ jobs:
           mkdir -p docs/swagger-ui
           cp -f .docs/swagger/* docs/swagger-ui
 
+      # ドキュメントの追加
+      - name: Cache Documents
+        id: documents_cache_id
+        uses: actions/cache@v3
+        with:
+          path: documents
+          key: documents--${{ hashFiles('documents/**') }}
+      - name: Copy Documents files
+        id: build_documents
+        if: steps.documents_cache_id.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p docs
+          cp -r documents docs/
+
       - name: Upload artifact
         id: upload_artifact
-        if : steps.build_api.conclusion != 'skipped' || steps.build_swagger.conclusion != 'skipped'
+        if : steps.build_api.conclusion != 'skipped' || steps.build_swagger.conclusion != 'skipped' || steps.build_documents.conclusion != 'skipped'
         uses: actions/upload-pages-artifact@v2
         with:
           # Upload entire repository

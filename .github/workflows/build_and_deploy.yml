@@ -46,14 +46,13 @@ jobs:
           path: .docs/jekyll-root
           key: jekyll-root--${{ hashFiles('jekyll-root/**') }}
       - name: Build html by Jekyll
+        id: build_documents
         if: steps.documents_cache_id.outputs.cache-hit != 'true'
         uses: actions/jekyll-build-pages@v1
         with:
           source: jekyll-root
           destination: .docs/jekyll-root
       - name: Copy documents to docs
-        id: build_documents
-        if: steps.documents_cache_id.outputs.cache-hit != 'true'
         run: |
           # まず、 .docs ディレクトリのパーミッションを直す。これがないと permission denied になる
           sudo chown -R runner:docker .docs

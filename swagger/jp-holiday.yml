@@ -56,6 +56,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HolidayMap"
+  /list/all:
+    get:
+      tags:
+        - list
+      summary: 全期間の祝日を返す
+      responses:
+        "200":
+          description: 祝日Map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HolidayMap"
   /holiday/{year}/{month}/{date}:
     get:
       tags:

@@ -29,14 +29,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.13"]
     env:
       GEN_HOLIDAY_API: true
       HASH_SUFFIX: v2
     outputs:
       should_deploy: ${{ steps.set_output_to_deploy.outputs.upload_artifact }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # ドキュメントの追加
       - name: Cache documents
@@ -78,7 +78,7 @@ jobs:
       # CSV が更新されているときだけ python ビルドする
       - name: Set up Python ${{ matrix.python-version }}
         if: steps.api_cache_id.outputs.cache-hit != 'true'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
@@ -105,7 +105,7 @@ jobs:
           key: swagger--${{ hashFiles('swagger/**') }}
       - name: Checkout swagger-ui
         if: steps.swagger_cache_id.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: swagger-api/swagger-ui
           ref: 'v4.15.5'
@@ -125,7 +125,7 @@ jobs:
       - name: Upload artifact
         id: upload_artifact
         if : steps.build_api.conclusion != 'skipped' || steps.build_swagger.conclusion != 'skipped' || steps.build_documents.conclusion != 'skipped'
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
           path: 'docs'
@@ -144,4 +144,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
